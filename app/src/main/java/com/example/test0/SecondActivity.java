@@ -1,66 +1,31 @@
 package com.example.test0;
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
-import com.example.test0.adapters.MyAdapter;
-import com.example.test0.models.Word;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
-import static android.view.Gravity.BOTTOM;
-import static android.view.Gravity.CENTER;
-import static android.view.Gravity.CENTER_VERTICAL;
 
 
-public class MainActivity extends AppCompatActivity{
-    RecyclerView recyclerView;
-    //MyAdapter mAdapter;
-    CustomGridLayoutManager layoutManager;
-    Handler handler;
-    public int page = 0;
-
-    TextView textView,tv,Thint,Timertv;
+public class SecondActivity extends AppCompatActivity{
+    TextView textView,tv;
     ViewGroup _root;
     int x,y;
-    AlarmManager builder1;
     private int _xDelta;
     private int _yDelta;
     RelativeLayout rlayout1;
@@ -69,98 +34,38 @@ public class MainActivity extends AppCompatActivity{
     int windowwidth; // Actually the width of the RelativeLayout.
     int windowheight; // Actually the height of the RelativeLayout.
     boolean intersect = false;
-    int timer;
-    Runnable runnable;
-
-    ArrayList<Word> s1 = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.onPause();
-        handler = new Handler();
+
 
         rlayoutParent = new RelativeLayout(this);
         rlayoutParent.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         rlayoutParent.setBackgroundResource(R.mipmap.bg);
-
         rlayout1 = new RelativeLayout(this);
         RelativeLayout.LayoutParams params1 =new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         rlayout1.setLayoutParams(params1);
+//        params1.addRule(RelativeLayout.CENTER_IN_PARENT);
 
         rlayout2 = new RelativeLayout(this);
         RelativeLayout.LayoutParams params2 =new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         rlayout2.setLayoutParams(params2);
-
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-
-        Thint = new TextView(this);
-        Timertv = new TextView(this);
         windowwidth = size.x;
         windowheight = size.y;
         rlayout2.setY( windowheight / 2);
-        Thint.setY((float) (windowheight / 1.33));
-        Timertv.setX((float) (windowwidth / 1.2));
-        Timertv.setY((float) (windowheight / 1.5));
-        // recyclerView.setAdapter(mAdapter);
 
-        // Get a reference to our posts
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("s1");
-
-// Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<ArrayList<Word>> genericTypeIndicator = new GenericTypeIndicator<ArrayList<Word>>() {};
-                ArrayList<Word> post = dataSnapshot.getValue(genericTypeIndicator);
-                s1.clear();
-                s1.addAll(post);
-                if(s1.size() > 0) {
-                    showData(s1.get(page));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
-    }
-    @Override
-    protected void onPause(){
-        super.onPause();
-        handler.removeCallbacks(this.runnable);
-
-    }
-    @Override
-    public void onResume(){
-        super.onResume();
-
-        handler.postDelayed(this.runnable,1000);
-
-    }
-
-
-    public void showData(final Word word){
-
-        rlayoutParent.removeAllViews();
-        rlayout1.removeAllViews();
-        rlayout2.removeAllViews();
-
-        final String element = word.getContent();
-        final String hint = word.getHint();
-        timer = word.getTimer();
-        final String[] chars = element.split("(?!^)");
+        final String s1 = "ACCOUNT";
+        final String[] chars = s1.split("(?!^)");
         final List<String> list = Arrays.asList(chars);
         Collections.shuffle(list);
         final String[] chars2 = new String[list.size()];
 
         for (int i = 0; i < list.size(); i++) {
-            tv = new TextView(MainActivity.this);
+            tv = new TextView(SecondActivity.this);
             RelativeLayout.LayoutParams params;
             params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(150*(i), 10, 10, 10);
@@ -178,9 +83,10 @@ public class MainActivity extends AppCompatActivity{
 
             Log.d("id", tv.getId() + "" );
         }
+        rlayoutParent.addView(rlayout2);
 
         for (int i = 0; i < list.size(); i++) {
-            textView = new TextView(MainActivity.this);
+            textView = new TextView(SecondActivity.this);
             textView.setText(String.valueOf(list.get(i)));
             RelativeLayout.LayoutParams params;
             params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -193,7 +99,8 @@ public class MainActivity extends AppCompatActivity{
             textView.setBackgroundResource(R.drawable.rounded_rectangle);
             textView.setPadding(40, 40, 40, 40);
 
-            textView.setOnTouchListener(new View.OnTouchListener() {
+
+            textView.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent event) {
                     final int X = (int) event.getRawX();
@@ -204,7 +111,7 @@ public class MainActivity extends AppCompatActivity{
                     if (isOut(view)) {
                         if (!isOutReported) {
                             isOutReported = true;
-                            Toast.makeText(MainActivity.this, "OUT", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SecondActivity.this, "OUT", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         isOutReported = false;
@@ -226,6 +133,7 @@ public class MainActivity extends AppCompatActivity{
                                 int[] secondPosition = new int[2];
 
                                 TextView tv = (TextView) rlayout2.findViewById(j);
+
                                 tv.getLocationOnScreen(secondPosition);
 
                                 // Rect constructor parameters: left, top, right, bottom
@@ -236,7 +144,7 @@ public class MainActivity extends AppCompatActivity{
                                 if (Rect.intersects(rectFirstView, rectSecondView)) {
                                     RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams) view.getLayoutParams();
                                     layoutParams1.leftMargin = secondPosition[0];
-                                    layoutParams1.topMargin = secondPosition[1]-50;
+                                    layoutParams1.topMargin = secondPosition[1] - 200;
                                     view.setLayoutParams(layoutParams1);
                                     intersect = true;
                                     chars2[j - list.size()] = v1.getText().toString();
@@ -273,17 +181,10 @@ public class MainActivity extends AppCompatActivity{
                             for (int j=0;j<chars2.length;j++){
                                 stringBuilder.append(chars2[j]);
                             }
-                            if(element.contentEquals(stringBuilder.toString())){
-                                if( page + 1 < s1.size()) {
-                                    Toast.makeText(MainActivity.this, "Hurray !! You Won.", Toast.LENGTH_LONG).show();
-                                    handler.removeCallbacks(runnable);
-                                    page = page+1;
-                                    showData(s1.get(page));
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Game Over !! You Won.", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(MainActivity.this, Gameover.class);
-                                    startActivity(intent);
-                                }
+                            if(s1.contentEquals(stringBuilder.toString())){
+                                Toast.makeText(SecondActivity.this, "Hurray !! You Won.", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(SecondActivity.this, MainActivity.class);
+                                startActivity(intent);
                             }
                             break;
                         case MotionEvent.ACTION_POINTER_DOWN:
@@ -320,96 +221,17 @@ public class MainActivity extends AppCompatActivity{
             });
             rlayout1.addView(textView);
             rlayout1.setGravity(Gravity.CENTER);
+
         }
 
-        RelativeLayout.LayoutParams params0;
-        params0 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-        Timertv.setLayoutParams(params0);
-        Timertv.setTextColor(this.getResources().getColor(R.color.colorPrimaryDark));
-        Timertv.setBackgroundResource(R.drawable.rounded_rectangle);
-        Timertv.setPadding(30, 30, 30, 30);
-        Timertv.setTextSize(25);
-
-        runnable = new Runnable() {
-            public void run() {
-                if (timer >= 0) {
-                    Timertv.setText(String.valueOf(timer--));
-                    handler.postDelayed(this,1000);
-                }
-                else{
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                    handler.removeCallbacks(this);
-                    builder1.setMessage("GAME OVER!");
-                    builder1.setIcon(android.R.drawable.ic_dialog_alert);
-                    builder1.setCancelable(true);
-                    builder1.setPositiveButton(
-                            "Try Again",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    showData(s1.get(page));
-                                    dialog.cancel();
-                                }
-                            });
-
-                    builder1.setNegativeButton(
-                            "Skip",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    if(page + 1 < s1.size()) {
-                                        page = page+1;
-                                        showData(s1.get(page));
-                                    } else {
-                                        Toast.makeText(MainActivity.this, "Game Over", Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(MainActivity.this, Gameover.class);
-                                        startActivity(intent);
-                                    }
-                                    dialog.cancel();
-                                }
-                            });
-
-                    AlertDialog alert = builder1.create();
-                    alert.show();
-
-                }
-            }
-        };
-        handler.postDelayed(runnable, 1000);
-
-        RelativeLayout.LayoutParams paramsExample;
-        paramsExample = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-        Thint.setLayoutParams(paramsExample);
-        Thint.setTextColor(this.getResources().getColor(R.color.colorPrimaryDark));
-        Thint.setBackgroundResource(R.drawable.rounded_rectangle);
-        Thint.setPadding(30, 30, 30, 30);
-        Thint.setGravity(Gravity.CENTER);
-        Thint.setTextSize(25);
-        Thint.setText(hint);
-
-        rlayoutParent.addView(rlayout2);
         rlayoutParent.addView(rlayout1);
-        rlayoutParent.addView(Thint);
-        rlayoutParent.addView(Timertv);
 
         setContentView(rlayoutParent);
 
     }
-   public class CustomGridLayoutManager extends LinearLayoutManager {
-       private boolean isScrollEnabled = true;
 
-       public CustomGridLayoutManager(Context context, int orientation, boolean reverseLayout) {
-           super(context, orientation, reverseLayout);
-       }
-
-       public void setScrollEnabled(boolean flag) {
-           this.isScrollEnabled = flag;
-       }
-
-       @Override
-       public boolean canScrollHorizontally() {
-           //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
-           return isScrollEnabled && super.canScrollHorizontally();
-       }
-   }
+    // Tracks when we have reported that the image view is out of bounds so we
+    // don't over report.
     private boolean isOutReported = false;
 
     private boolean isOut(View view) {
@@ -425,9 +247,5 @@ public class MainActivity extends AppCompatActivity{
                 (-view.getTop() >= viewPctHeight) ||
                 (view.getBottom() - windowheight) > viewPctHeight);
     }
-
-   public int getPage(){
-     return page++;
-   }
 
 }
